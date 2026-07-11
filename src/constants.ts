@@ -55,7 +55,7 @@ export const APST_STANDARDS: APSTStandard[] = [
       { id: '4.1', title: 'Support student participation', description: 'Identify strategies to support inclusive student participation and engagement in classroom activities.' },
       { id: '4.2', title: 'Manage classroom activities', description: 'Demonstrate the capacity to organise classroom activities and provide clear directions.' },
       { id: '4.3', title: 'Manage challenging behaviour', description: 'Demonstrate knowledge of practical approaches to manage challenging behaviour.' },
-      { id: '4.4', title: 'Maintain student safety', description: 'Describe strategies that support students’ wellbeing and safety working within school and/or system, curriculum and legislative requirements.' },
+      { id: '4.4', title: 'Maintain student safety', description: 'Describe strategies that support students' wellbeing and safety working within school and/or system, curriculum and legislative requirements.' },
       { id: '4.5', title: 'Use ICT safely, responsibly and ethically', description: 'Demonstrate an understanding of the relevant issues and the strategies available to support the safe, responsible and ethical use of ICT in learning and teaching.' }
     ]
   },
@@ -90,7 +90,7 @@ export const APST_STANDARDS: APSTStandard[] = [
       { id: '7.1', title: 'Meet professional ethics and responsibilities', description: 'Understand the implications of and comply with relevant legislative, administrative, organisational and professional requirements, policies and processes.' },
       { id: '7.2', title: 'Comply with legislative, administrative and organisational requirements', description: 'Understand the relevant legislative, administrative and organisational policies and processes required for teachers according to school stage.' },
       { id: '7.3', title: 'Engage with the parents/carers', description: 'Understand strategies for working effectively, sensitively and confidentially with parents/carers.' },
-      { id: '7.4', title: 'Engage with professional teaching networks and broader communities', description: 'Understand the role of external professionals and community representatives in broadening teachers’ professional knowledge and practice.' }
+      { id: '7.4', title: 'Engage with professional teaching networks and broader communities', description: 'Understand the role of external professionals and community representatives in broadening teachers' professional knowledge and practice.' }
     ]
   }
 ];

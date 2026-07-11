@@ -301,7 +301,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, onNavigate, user,
       {/* Navigation */}
       <nav aria-label="Primary navigation" className="flex-1 overflow-y-auto py-2">
         {visibleGroups.length === 0 && !collapsed && (
-          <p className="px-4 py-3 text-xs text-slate-400">No tools match “{query}”.</p>
+          <p className="px-4 py-3 text-xs text-slate-400">No tools match "{query}".</p>
         )}
         {visibleGroups.map(group => {
           const colors = groupColors[group.title] || defaultColors;

@@ -24,7 +24,7 @@ type QipGoal = {
 
 const NQS_AREAS = [
   'QA1: Educational Program and Practice',
-  'QA2: Children’s Health and Safety',
+  'QA2: Children's Health and Safety',
   'QA3: Physical Environment',
   'QA4: Staffing Arrangements',
   'QA5: Relationships with Children',
@@ -33,10 +33,10 @@ const NQS_AREAS = [
 ];
 
 export const GoalPlanner: React.FC<GoalPlannerProps> = ({ user, initialArea }) => {
-  const [goals, setGoals] = usePersistedState<QipGoal[]>(‘qip_goals’, [
-    { id: ‘1’, nqsArea: ‘QA1: Educational Program and Practice’, title: ‘Implement bi-weekly critical reflection sessions for all lead educators.’, progress: ‘In Progress’, aiGenerated: false },
-    { id: ‘2’, nqsArea: ‘QA2: Children’s Health and Safety’, title: ‘Conduct comprehensive sun-safety audit of all outdoor spaces.’, progress: ‘Not Started’, aiGenerated: false },
-    { id: ‘3’, nqsArea: ‘QA6: Collaborative Partnerships’, title: ‘Establish a new parent advisory committee for monthly feedback.’, progress: ‘Achieved’, aiGenerated: true },
+  const [goals, setGoals] = usePersistedState<QipGoal[]>('qip_goals', [
+    { id: '1', nqsArea: 'QA1: Educational Program and Practice', title: 'Implement bi-weekly critical reflection sessions for all lead educators.', progress: 'In Progress', aiGenerated: false },
+    { id: '2', nqsArea: 'QA2: Children's Health and Safety', title: 'Conduct comprehensive sun-safety audit of all outdoor spaces.', progress: 'Not Started', aiGenerated: false },
+    { id: '3', nqsArea: 'QA6: Collaborative Partnerships', title: 'Establish a new parent advisory committee for monthly feedback.', progress: 'Achieved', aiGenerated: true },
   ]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedArea, setSelectedArea] = useState<string>(
