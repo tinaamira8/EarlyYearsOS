@@ -1,0 +1,8 @@
+{
+  "name": "EarlyYearsOS - Professional Educator Suite",
+  "description": "The all-in-one AI operating system for Australian Early Childhood Educators. Features Observation Writing, QIP Planning, Newsletters, and Compliance Management.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

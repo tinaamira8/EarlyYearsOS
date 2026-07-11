@@ -1,0 +1,194 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: user UID
+    // Fields:
+    //   - role: string (required) - 'Admin', 'Director', 'Educator', 'Parent'
+    //   - centreId: string (required) - The ID of the centre
+    //
+    // Collection: incidents
+    // Document ID: auto-generated
+    // Fields:
+    //   - centreId: string (required) - The ID of the centre
+    //   - childId: string (required) - The ID of the child
+    //   - childName: string (required) - The name of the child
+    //   - date: string (required) - The date of the incident (YYYY-MM-DD)
+    //   - time: string (required) - The time of the incident (HH:MM)
+    //   - location: string (required) - The location
+    //   - description: string (required) - The description
+    //   - actionTaken: string (required) - The action taken
+    //   - parentNotified: boolean (required) - Whether the parent was notified
+    //   - parentSignature: string (optional) - The parent's signature
+    //   - staffSignature: string (required) - The staff's signature
+    //   - createdAt: timestamp (required) - The creation timestamp
+    //   - authorId: string (required) - The ID of the user who created it
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.authorId;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function hasRole(role) {
+      return isAuthenticated() && getUserData().role == role;
+    }
+
+    function isCentreStaff(centreId) {
+      return isAuthenticated() && getUserData().centreId == centreId && (getUserData().role == 'Admin' || getUserData().role == 'Director' || getUserData().role == 'Educator' || getUserData().role == 'DirectorGeneral');
+    }
+
+    function isCentreAdminOrDirector(centreId) {
+      return isAuthenticated() && getUserData().centreId == centreId && (getUserData().role == 'Admin' || getUserData().role == 'Director' || getUserData().role == 'DirectorGeneral');
+    }
+
+    function uidUnchanged() {
+      return !('authorId' in request.resource.data) ||
+        request.resource.data.authorId == request.auth.uid;
+    }
+
+    function uidNotModified() {
+      return !('authorId' in request.resource.data) ||
+        request.resource.data.authorId == resource.data.authorId;
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+    
+    function isValidOptionalString(field, minLen, maxLen) {
+      return !(field in request.resource.data) ||
+             (request.resource.data[field] is string &&
+              request.resource.data[field].size() >= minLen &&
+              request.resource.data[field].size() <= maxLen);
+    }
+
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasOnlyAllowedFields(['role', 'centreId', 'email', 'name']) &&
+             hasRequiredFields(['role', 'centreId']) &&
+             data.role in ['Admin', 'Director', 'Educator', 'Parent', 'DirectorGeneral'] &&
+             validStringLength('centreId', 1, 100);
+    }
+
+    function isValidIncident(data) {
+      return hasOnlyAllowedFields([
+        'centreId', 'childId', 'childName', 'date', 'time', 'location', 
+        'description', 'actionTaken', 'parentNotified', 'parentSignature', 
+        'staffSignature', 'createdAt', 'authorId'
+      ]) &&
+      hasRequiredFields([
+        'centreId', 'childId', 'childName', 'date', 'time', 'location', 
+        'description', 'actionTaken', 'parentNotified', 'staffSignature', 
+        'createdAt', 'authorId'
+      ]) &&
+      validStringLength('centreId', 1, 100) &&
+      validStringLength('childId', 1, 100) &&
+      validStringLength('childName', 1, 200) &&
+      validStringLength('date', 1, 20) &&
+      validStringLength('time', 1, 20) &&
+      validStringLength('location', 1, 200) &&
+      validStringLength('description', 1, 5000) &&
+      validStringLength('actionTaken', 1, 5000) &&
+      data.parentNotified is bool &&
+      isValidOptionalString('parentSignature', 1, 1000000) && // base64 can be large
+      validStringLength('staffSignature', 1, 1000000) &&
+      data.createdAt is timestamp &&
+      validStringLength('authorId', 1, 100);
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      // For prototype, allow users to create their own profile if it doesn't exist.
+      // In production, this should be restricted to Admins or Cloud Functions.
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      // For prototype, allow users to update their own role/centreId to test different roles.
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+    }
+
+    match /incidents/{incidentId} {
+      // Allow read if authenticated and the user is staff at the centre, or if they are the author
+      allow read: if isAuthenticated() && (isCentreStaff(resource.data.centreId) || isDocOwner());
+      
+      // Allow create if authenticated, they are staff at the centre they are creating for, and the data is valid
+      allow create: if isAuthenticated() && 
+                    isCentreStaff(request.resource.data.centreId) &&
+                    isValidIncident(request.resource.data) && 
+                    uidUnchanged();
+                    
+      // Allow update if they are the author or a Director/Admin at the centre
+      allow update: if isAuthenticated() && 
+                    (isDocOwner() || isCentreAdminOrDirector(resource.data.centreId)) &&
+                    isValidIncident(request.resource.data) && 
+                    uidNotModified() &&
+                    areImmutableFieldsUnchanged(['authorId', 'createdAt', 'centreId', 'childId']);
+                    
+      // Allow delete if they are the author or a Director/Admin at the centre
+      allow delete: if isAuthenticated() && (isDocOwner() || isCentreAdminOrDirector(resource.data.centreId));
+    }
+    match /children/{childId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && 
+                    hasRequiredFields(['centreId', 'name']) &&
+                    validStringLength('centreId', 1, 100) &&
+                    validStringLength('name', 1, 200);
+      allow update: if isAuthenticated() &&
+                    areImmutableFieldsUnchanged(['centreId']);
+      allow delete: if isAuthenticated();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() &&
+                    hasRequiredFields(['userId', 'title', 'content', 'type', 'createdAt', 'read']) &&
+                    validStringLength('userId', 1, 100) &&
+                    validStringLength('title', 1, 200) &&
+                    validStringLength('content', 1, 1000) &&
+                    validStringLength('type', 1, 50) &&
+                    request.resource.data.read is bool &&
+                    request.resource.data.createdAt is timestamp;
+      allow update: if isAuthenticated() &&
+                    areImmutableFieldsUnchanged(['userId', 'title', 'content', 'type', 'createdAt']);
+      allow delete: if isAuthenticated();
+    }
+  }
+}

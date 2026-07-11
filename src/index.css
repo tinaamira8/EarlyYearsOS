@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-brand-navy: #07133D;
+  --color-brand-burgundy: #4B102D;
+  --color-brand-berry: #9C3B76;
+  --color-brand-teal: #0E3F52;
+  --color-brand-azure: #0E638B;
+  --color-brand-maroon: #420420;
+  --color-brand-blue: #003366;
+  
+  --color-pumpkin: #ff6700;
+  --color-pumpkin-50: #fff0e0;
+  --color-pumpkin-100: #ffdbb3;
+  --color-pumpkin-400: #ff8533;
+  --color-pumpkin-500: #ff6700;
+  --color-pumpkin-600: #e65c00;
+  --color-pumpkin-700: #cc5200;
+  
+  --color-platinum: #ebebeb;
+  --color-silver: #c0c0c0;
+  
+  --color-cornflower: #3a6ea5;
+  --color-cornflower-50: #eef4fa;
+  --color-cornflower-100: #dbe7f4;
+  --color-cornflower-200: #b8d0ea;
+  --color-cornflower-400: #5a86b3;
+  --color-cornflower-500: #3a6ea5;
+  --color-cornflower-600: #2f5a8a;
+  --color-cornflower-700: #254870;
+  
+  --color-azure: #004e98;
+  --color-azure-50: #e0efff;
+  --color-azure-100: #b3d7ff;
+  --color-azure-200: #80bfff;
+  --color-azure-400: #3385ff;
+  --color-azure-500: #004e98;
+  --color-azure-600: #003e7a;
+  --color-azure-700: #002f5c;
+  --color-azure-800: #002447;
+  --color-azure-900: #001a33;
+  
+  --color-slate-850: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
+}
+
+@layer base {
+  body {
+    @apply text-slate-800 antialiased transition-colors duration-300;
+    font-family: var(--font-sans);
+    background-color: #f4f5fb;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(129, 140, 248, 0.12), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 0%, rgba(244, 114, 182, 0.08), transparent),
+      radial-gradient(ellipse 70% 50% at 50% 110%, rgba(45, 212, 191, 0.07), transparent);
+    background-attachment: fixed;
+  }
+
+  :focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+  }
+
+  .dark body {
+    @apply bg-slate-950 text-slate-100;
+  }
+}
+
+@layer components {
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-platinum;
+  }
+  .dark ::-webkit-scrollbar-track {
+    @apply bg-slate-850;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full;
+    background: linear-gradient(180deg, #a5b4fc, #c4b5fd);
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    @apply bg-slate-600;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #818cf8, #a78bfa);
+  }
+}
+
+/* High Contrast Mode Overrides */
+.high-contrast {
+  --tw-bg-opacity: 1 !important;
+  --tw-text-opacity: 1 !important;
+  --tw-border-opacity: 1 !important;
+}
+.high-contrast body {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+}
+.high-contrast .bg-white, 
+.high-contrast .bg-platinum,
+.high-contrast .bg-slate-50,
+.high-contrast .bg-slate-100 {
+  background-color: #000000 !important;
+}
+.high-contrast .text-slate-800,
+.high-contrast .text-slate-900,
+.high-contrast .text-slate-700,
+.high-contrast .text-slate-600,
+.high-contrast .text-slate-500 {
+  color: #FFFFFF !important;
+}
+.high-contrast .border,
+.high-contrast .border-slate-100,
+.high-contrast .border-slate-200,
+.high-contrast .border-silver\/30 {
+  border-color: #FFFFFF !important;
+  border-width: 2px !important;
+}
+.high-contrast button,
+.high-contrast a {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.high-contrast button:focus,
+.high-contrast a:focus {
+  outline-color: #FFFF00 !important;
+  box-shadow: 0 0 0 4px #000000, 0 0 0 6px #FFFF00 !important;
+}
+.high-contrast .text-brand-azure,
+.high-contrast .text-azure-600 {
+  color: #FFFF00 !important;
+}
+.high-contrast .bg-brand-azure,
+.high-contrast .bg-azure-600 {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
+}

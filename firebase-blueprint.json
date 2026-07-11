@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "Incident": {
+      "title": "Incident",
+      "description": "A report of an incident involving a child at the centre.",
+      "type": "object",
+      "properties": {
+        "centreId": {
+          "type": "string",
+          "description": "The ID of the centre where the incident occurred."
+        },
+        "childId": {
+          "type": "string",
+          "description": "The ID of the child involved."
+        },
+        "childName": {
+          "type": "string",
+          "description": "The name of the child involved."
+        },
+        "date": {
+          "type": "string",
+          "description": "The date of the incident (YYYY-MM-DD)."
+        },
+        "time": {
+          "type": "string",
+          "description": "The time of the incident (HH:MM)."
+        },
+        "location": {
+          "type": "string",
+          "description": "The location where the incident occurred."
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the incident."
+        },
+        "actionTaken": {
+          "type": "string",
+          "description": "The action taken by staff."
+        },
+        "parentNotified": {
+          "type": "boolean",
+          "description": "Whether the parent was notified."
+        },
+        "parentSignature": {
+          "type": "string",
+          "description": "The parent's signature (base64 image data)."
+        },
+        "staffSignature": {
+          "type": "string",
+          "description": "The staff member's signature (base64 image data)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the report was created."
+        },
+        "authorId": {
+          "type": "string",
+          "description": "The ID of the user who created the report."
+        }
+      },
+      "required": [
+        "centreId",
+        "childId",
+        "childName",
+        "date",
+        "time",
+        "location",
+        "description",
+        "actionTaken",
+        "parentNotified",
+        "staffSignature",
+        "createdAt",
+        "authorId"
+      ]
+    }
+  },
+  "firestore": {
+    "/incidents/{incidentId}": {
+      "schema": {
+        "$ref": "#/entities/Incident"
+      },
+      "description": "Stores all incident reports."
+    }
+  }
+}
