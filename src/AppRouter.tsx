@@ -190,7 +190,7 @@ export const AppRouter: React.FC<AppRouterProps> = ({
       case AppView.RECEPTION:
         return <ReceptionKiosk />;
       case AppView.SUBSCRIPTION:
-        return <SubscriptionPage />;
+        return <SubscriptionPage user={user} />;
       case AppView.LEGAL:
         return <LegalCompliance />;
       case AppView.PARENT_PORTAL:
