@@ -560,9 +560,13 @@ async function startServer() {
     const distPath = path.resolve("dist");
     const fs = await import("fs");
     if (fs.existsSync(distPath)) {
-      app.use(express.static(distPath));
-      app.get("/{*splat}", (req, res) => {
-        res.sendFile(path.resolve(distPath, "index.html"));
+      app.use(express.static(distPath, { index: "index.html" }));
+      app.use((req, res, next) => {
+        if (req.method === "GET" && !req.path.startsWith("/api/")) {
+          res.sendFile(path.resolve(distPath, "index.html"));
+        } else {
+          next();
+        }
       });
     } else {
       console.warn("dist/ folder not found — running Vite in middleware mode as fallback");
