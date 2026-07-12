@@ -6,7 +6,7 @@ import {
   ChevronRight, Home, Calendar, DollarSign, Leaf, Megaphone,
   MessageSquare, Lightbulb, Baby, Utensils, Moon, Package,
   Building2, Globe, GraduationCap, Wrench, Zap, BarChart2,
-  UserCheck, HelpCircle, Map, LogOut, Menu, X, Search, Layers, Clock
+  UserCheck, HelpCircle, Map, LogOut, Menu, X, Search, Layers, Clock, CreditCard
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -176,6 +176,7 @@ const navGroups: NavGroup[] = [
     title: 'Admin',
     icon: <Settings size={14} />,
     items: [
+      { label: 'Subscription', view: AppView.SUBSCRIPTION, icon: <CreditCard size={14} /> },
       { label: 'User Settings', view: AppView.USER_SETTINGS, icon: <Settings size={14} /> },
       { label: 'System Audit Log', view: AppView.SYSTEM_AUDIT_LOG, icon: <ClipboardList size={14} />, roles: MANAGEMENT },
       { label: 'Terms of Service', view: AppView.TERMS_OF_SERVICE, icon: <FileText size={14} /> },
