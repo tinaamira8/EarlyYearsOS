@@ -557,11 +557,21 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    // In production, serve static files from dist
-    app.use(express.static("dist"));
-    app.get("*", (req, res) => {
-      res.sendFile(path.resolve("dist", "index.html"));
-    });
+    const distPath = path.resolve("dist");
+    const fs = await import("fs");
+    if (fs.existsSync(distPath)) {
+      app.use(express.static(distPath));
+      app.get("*", (req, res) => {
+        res.sendFile(path.resolve(distPath, "index.html"));
+      });
+    } else {
+      console.warn("dist/ folder not found — running Vite in middleware mode as fallback");
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: "spa",
+      });
+      app.use(vite.middlewares);
+    }
   }
 
   server.listen(PORT, "0.0.0.0", () => {
@@ -571,5 +581,12 @@ async function startServer() {
     setInterval(runComplianceCheck, 24 * 60 * 60 * 1000);
   });
 }
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled Rejection:", reason);
+});
 
 startServer();
