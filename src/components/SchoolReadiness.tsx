@@ -39,7 +39,7 @@ export const SchoolReadiness: React.FC = () => {
     if (!needs.length) return toast.success('All current readiness indicators are marked complete.');
     setIsGenerating(true);
     try {
-      setRecommendations(await generateSchoolReadinessPlan(needs.slice(0, 6).join(', '), 'use the child's observed interests recorded by educators'));
+      setRecommendations(await generateSchoolReadinessPlan(needs.slice(0, 6).join(', '), `use the child's observed interests recorded by educators`));
       toast.success('Readiness activities drafted for educator review.');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'AI generation failed.');

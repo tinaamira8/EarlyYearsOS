@@ -1,7 +1,7 @@
 
 export enum NQSArea {
   QA1 = 'QA1: Educational Program and Practice',
-  QA2 = 'QA2: Children's Health and Safety',
+  QA2 = 'QA2: Children\'s Health and Safety',
   QA3 = 'QA3: Physical Environment',
   QA4 = 'QA4: Staffing Arrangements',
   QA5 = 'QA5: Relationships with Children',
