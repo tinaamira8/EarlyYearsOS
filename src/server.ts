@@ -1,4 +1,5 @@
 import express from "express";
+import { renderPublicPage, sitemap } from "./publicSite";
 import { createServer as createViteServer } from "vite";
 import Stripe from "stripe";
 import { Resend } from "resend";
@@ -86,6 +87,18 @@ async function startServer() {
   */
 
   app.use(cors());
+  // Public resources are rendered before authentication and the SPA fallback.
+  app.get('/sitemap.xml', (_req, res) => res.type('application/xml').send(sitemap));
+  app.get('/robots.txt', (_req, res) => res.type('text/plain').send('User-agent: *\nAllow: /\nSitemap: https://missmuok.com/sitemap.xml\n'));
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+    const pathname = req.path === '/' ? '/' : req.path.replace(/\/$/, '');
+    const html = renderPublicPage(pathname);
+    if (html) return res.type('html').send(html);
+    if (pathname.startsWith('/guides/')) return res.status(404).type('html').send('<h1>Guide not found</h1><a href="/guides">Browse educator guides</a>');
+    if (pathname === '/login' || pathname === '/app.html') res.set('X-Robots-Tag', 'noindex, follow');
+    next();
+  });
 
   // Socket.io connection handling
   io.on("connection", (socket) => {
@@ -300,7 +313,7 @@ async function startServer() {
           },
         ],
         mode: "subscription",
-        success_url: `${domain}/?payment_success=true&plan=${plan}`,
+        success_url: `${domain}/login?payment_success=true&plan=${plan}`,
         cancel_url: `${domain}/`,
         client_reference_id: userId,
         customer_email: email,
@@ -563,7 +576,7 @@ async function startServer() {
       app.use(express.static(distPath, { index: "index.html" }));
       app.use((req, res, next) => {
         if (req.method === "GET" && !req.path.startsWith("/api/")) {
-          res.sendFile(path.resolve(distPath, "index.html"));
+          res.sendFile(path.resolve(distPath, "app.html"));
         } else {
           next();
         }

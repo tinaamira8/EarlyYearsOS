@@ -11,6 +11,7 @@ import { Sidebar } from './components/Sidebar';
 // Directly imported components for initial load
 import { LandingPage } from './components/LandingPage';
 import { LoginPage } from './components/LoginPage';
+import { PasswordRecoveryPage } from './components/PasswordRecoveryPage';
 
 // Lazy loaded components (only those not in AppRouter or needed here)
 const Onboarding = React.lazy(() => import('./components/Onboarding').then(m => ({ default: m.Onboarding })));
@@ -155,6 +156,10 @@ const App: React.FC = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  if (window.location.pathname === '/reset-password') {
+    return <PasswordRecoveryPage />;
+  }
 
   if (loading) {
     return (

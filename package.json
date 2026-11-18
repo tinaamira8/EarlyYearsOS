@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx src/server.ts",
     "start": "tsx src/server.ts",
-    "build": "vite build",
+    "build": "vite build && tsx scripts/build-public.ts",
     "preview": "vite preview",
     "lint": "tsc --noEmit",
     "test": "vitest",

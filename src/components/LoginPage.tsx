@@ -262,9 +262,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         <div className="text-center text-indigo-400 text-xs mt-6 space-y-1">
           <p>© 2026 EarlyYearsOS · Centre Administration Suite</p>
           <p>
-            <button type="button" onClick={() => onLogin({ email: 'terms', password: '', name: '', role: 'Admin', _viewOverride: 'TERMS_OF_SERVICE' })} className="underline hover:text-indigo-200">Terms of Service</button>
+            <a href="/terms" className="underline hover:text-indigo-200">Terms of Service</a>
             {' · '}
-            <button type="button" onClick={() => onLogin({ email: 'privacy', password: '', name: '', role: 'Admin', _viewOverride: 'PRIVACY_POLICY' })} className="underline hover:text-indigo-200">Privacy Policy</button>
+            <a href="/privacy" className="underline hover:text-indigo-200">Privacy Policy</a>
           </p>
         </div>
       </div>
